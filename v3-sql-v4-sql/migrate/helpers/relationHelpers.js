@@ -165,7 +165,6 @@ async function migrateRelations(tables, relations) {
   relations = relations.filter((r) => v4Tables.includes(r.table));
 
   const v3RelationTables = tables.filter((t) => t.includes("__"));
-
   for (const relation of relations) {
     if (relation.type === "oneToOne") {
       await migrateOneToOneRelation(relation);
@@ -174,9 +173,11 @@ async function migrateRelations(tables, relations) {
         (t) =>
           t === `${relation.model}__${relation.attribute}` ||
           t.startsWith(
-            `${relation.model}_${relation.attribute}__${relation.modelF}`
+            `${relation.model}_${relation.attribute}__${snakeCase(
+              relation.modelF
+            )}`
           ) ||
-          (t.startsWith(`${relation.modelF}`) &&
+          (t.startsWith(`${snakeCase(relation.modelF)}`) &&
             t.endsWith(`__${relation.model}_${relation.attribute}`))
       );
 
